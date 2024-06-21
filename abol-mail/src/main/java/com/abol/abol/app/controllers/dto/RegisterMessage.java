@@ -1,4 +1,4 @@
-package com.abol.abol.app.contollers.dto;
+package com.abol.abol.app.controllers.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CustomMessage {
+public class RegisterMessage {
 
-    private String email ;
+    private String email;
     private String message;
+
 }

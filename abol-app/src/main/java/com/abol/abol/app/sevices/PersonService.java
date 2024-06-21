@@ -2,6 +2,7 @@ package com.abol.abol.app.sevices;
 
 import com.abol.abol.app.contollers.dto.LoginDto;
 import com.abol.abol.app.contollers.dto.PersonDto;
+import com.abol.abol.app.contollers.dto.RegisterMessage;
 import com.abol.abol.app.exception.FingerprintNotFoundException;
 import com.abol.abol.app.exception.UserAlreadyExistAuthenticationException;
 import com.abol.abol.app.exception.UserNotFoundException;
@@ -15,6 +16,9 @@ import com.abol.abol.app.security.dto.AccessTransfer;
 import com.abol.abol.app.security.dto.AuthTransfer;
 import com.abol.abol.app.security.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +26,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -35,6 +40,7 @@ public class PersonService {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final PersonRepository personRepository;
+    private final RestTemplate restTemplate;
     @Transactional
     public AuthTransfer register(PersonDto personDto) throws UserAlreadyExistAuthenticationException {
 
@@ -59,7 +65,18 @@ public class PersonService {
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-        return generateJwtAccessAndRefresh(person);
+        AuthTransfer authTransfer = generateJwtAccessAndRefresh(person);
+
+        // if the authentication is successful
+        String token = "Bearer " + authTransfer.getJwtAccess();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", token);
+        HttpEntity<RegisterMessage> requestEntity = new HttpEntity<>(new RegisterMessage(person.getEmail(), "User is registered"), headers);
+
+        restTemplate.exchange("http://localhost:8080/mail/file", HttpMethod.GET, requestEntity, String.class);
+
+        return authTransfer;
     }
 
     private AuthTransfer generateJwtAccessAndRefresh(Person person) {

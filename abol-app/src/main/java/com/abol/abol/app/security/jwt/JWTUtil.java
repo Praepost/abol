@@ -28,7 +28,7 @@ public class JWTUtil {
     // генерация токена (кладем в него имя пользователя и authorities)
     public String generateAccessToken(Person person) {
         Map<String, Object> claims = new HashMap<>();
-        String commaSeparatedListOfAuthorities = person.getUsername();
+        String commaSeparatedListOfAuthorities = String.valueOf(person.getRoles());
         claims.put("authorities", commaSeparatedListOfAuthorities);
         claims.put("exp", expireAccessTimeFromNow());
 

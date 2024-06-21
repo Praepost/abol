@@ -11,18 +11,30 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MQConfig {
 
-    public static final String QUEUE = "message_queue";
-    public static final String EXCHANGE = "message_exchange";
+    public static final String REGISTER_QUEUE = "register_queue";
+    public static final String FILE_QUEUE = "register_queue";
+    public static final String REGISTER_EXCHANGE = "register_exchange";
+    public static final String FILE_EXCHANGE = "file_exchange";
+
     public static final String ROUTING_KEY = "message_routingKey";
 
     @Bean
     public Queue queue() {
-        return  new Queue(QUEUE);
+        return  new Queue(REGISTER_QUEUE);
+    }
+    @Bean
+    public Queue queue2() {
+        return  new Queue(FILE_QUEUE);
     }
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE);
+        return new TopicExchange(REGISTER_EXCHANGE);
+    }
+
+    @Bean
+    public TopicExchange exchange2() {
+        return new TopicExchange(FILE_EXCHANGE);
     }
 
     @Bean
@@ -30,6 +42,14 @@ public class MQConfig {
         return BindingBuilder
                 .bind(queue)
                 .to(exchange)
+                .with(ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding binding2(Queue queue2, TopicExchange exchange2) {
+        return BindingBuilder
+                .bind(queue2)
+                .to(exchange2)
                 .with(ROUTING_KEY);
     }
 

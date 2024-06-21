@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+#  postgres:
+#    image: "postgres:10"
+#    container_name: "auradb"
+#    environment:
+#      - 'POSTGRES_USER=aurauser'
+#      - 'POSTGRES_PASSWORD=aurauser'
+#      - 'POSTGRES_DB=aura_db'
+#    ports:
+#      - '5432:5432'
+#    volumes:
+#      - pg_data:/var/lib/postgresql/data/
+
+#  app:
+#    build: ./
+#    container_name: 'aura-app'
+#    ports:
+#      - '80:80'
+#    depends_on:
+#      - postgres
+  rabbit:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+    volumes:
+      - rabbit:/var/lib/rabbitmq/
+      - rabbit-log:/var/log/rabbitmq
+volumes:
+  pg_data:
+  rabbit:
+  rabbit-log:

@@ -21,6 +21,8 @@ public class Person {
     private int id;
     @Column(name = "username")
     private String username;
+    @Column(name = "email")
+    private String email;
     @Column(name = "password")
     private String password;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
